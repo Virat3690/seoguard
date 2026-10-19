@@ -12,7 +12,7 @@ import httpx
 
 from .extract import PageSignals, extract_signals
 
-DEFAULT_UA = "seoguard/0.1 (+https://github.com/your-name/seoguard)"
+DEFAULT_UA = "seoguard/0.1 (+https://github.com/Virat3690/seoguard)"
 SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 MAX_BODY_BYTES = 5 * 1024 * 1024  # skip parsing anything bigger than 5 MB
 
