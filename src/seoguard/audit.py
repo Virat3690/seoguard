@@ -56,6 +56,13 @@ def _description(row: Row) -> tuple[str, str] | None:
     return None
 
 
+def _description_length(row: Row) -> tuple[str, str] | None:
+    d = row["meta_description"]
+    if d and len(d) > 160:
+        return "notice", f"Meta description is {len(d)} chars (truncated past ~160)"
+    return None
+
+
 def _canonical(row: Row) -> tuple[str, str] | None:
     if row["status"] != 200 or row["word_count"] is None:
         return None
@@ -97,6 +104,7 @@ RULES: dict[str, Callable[[Row], tuple[str, str] | None]] = {
     "redirects": _redirects,
     "title": _title,
     "description": _description,
+    "description-length": _description_length,
     "canonical": _canonical,
     "indexable": _indexable,
     "h1": _h1,

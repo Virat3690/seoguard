@@ -39,6 +39,21 @@ def test_broken_page_flags_expected_rules(tmp_path):
     assert ("https://a.test/x", "thin-content", "warning") in rules
 
 
+def test_long_description_flagged(tmp_path):
+    def page(url, desc):
+        html = (f'<title>T</title><meta name="description" content="{desc}">'
+                f"<link rel=canonical href={url}><body><h1>H</h1>{'word ' * 150}</body>")
+        return FetchResult(url=url, final_url=url, status=200, content_type="text/html",
+                           signals=extract_signals(html, url))
+
+    long_page = page("https://a.test/long", "x" * 200)
+    ok_page = page("https://a.test/ok", "x" * 160)
+    hits = [i for i in audit(_rows(tmp_path, long_page, ok_page)) if i.rule == "description-length"]
+
+    assert [(i.url, i.severity) for i in hits] == [("https://a.test/long", "notice")]
+    assert "200 chars" in hits[0].message
+
+
 def test_errors_sort_first(tmp_path):
     ok = FetchResult(url="https://a.test/r", final_url="https://a.test/", status=200,
                      redirects=["https://a.test/r"], content_type="text/html",
